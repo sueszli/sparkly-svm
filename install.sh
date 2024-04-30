@@ -3,9 +3,9 @@ if ! command -v pip3 &> /dev/null; then echo "pip3 missing"; exit 1; fi
 
 python3 -m pip install --upgrade pip > /dev/null
 
-pip3 install black > /dev/null
-pip3 install pipreqs > /dev/null
+pip install black > /dev/null
+pip install pipreqs > /dev/null
 
 rm -rf requirements.txt > /dev/null
 pipreqs . > /dev/null
-pip3 install -r requirements.txt > /dev/null
+pip install -r requirements.txt > /dev/null
