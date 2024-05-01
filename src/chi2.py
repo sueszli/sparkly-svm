@@ -4,6 +4,7 @@ from pyspark import SparkContext, SparkConf
 from pyspark.rdd import RDD
 import pathlib
 
+from typing import Tuple
 import json
 import re
 import time
@@ -14,65 +15,69 @@ sc = SparkContext(conf=conf)
 sc.setLogLevel("ERROR")
 datapath = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 
-stoppath = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
-stopwords = sc.textFile(str(stoppath)).collect()
-regex = r"[ \t\d()\[\]{}.!?,;:+=\-_\"\'~#@&*%€$§\/]+"
-
 
 # tokenization, case folding, stopword removal
 # fmt: off
-stime = time.perf_counter()
+stoppath = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
+stopwords = sc.textFile(str(stoppath)).collect()
+regex = r"[ \t\d()\[\]{}.!?,;:+=\-_\"\'~#@&*%€$§\/]+"
+get_terms = lambda text: [t for t in re.split(regex, text.lower()) if t and t not in stopwords]
 terms_cat: RDD = sc.textFile(str(datapath)) \
                 .map(json.loads) \
-                .map(lambda x: (x["reviewText"], x["category"])) \
-                .map(lambda x: ([t for t in re.split(regex, x[0].lower()) if t and t not in stopwords], x[1]))
+                .map(lambda jsn: (jsn["reviewText"], jsn["category"])) \
+                .map(lambda tc: (get_terms(tc[0]), tc[1]))  # type: ignore
 # fmt: on
-print(f"terms_cat in {time.perf_counter() - stime:.4f}s -> {terms_cat.take(1)}")
+print(f"terms_cat -> {terms_cat.take(1)}")
 
 
 # total num
-stime = time.perf_counter()
 N: int = sc.textFile(str(datapath)).count()
-print(f"N in {time.perf_counter() - stime:.4f}s -> {N}")
+print(f"N -> {N}")
 
 
 # [(cat, count), ...]
-stime = time.perf_counter()
 cat_count: RDD = terms_cat.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b)  # type: ignore
-get_cat_count = lambda cat: cat_count.filter(lambda x: x[0] == cat).map(lambda x: x[1]).first()
-print(f"cat_count in {time.perf_counter() - stime:.4f}s -> {cat_count.take(1)}")
+cat_count_broadcast = sc.broadcast(dict(cat_count.collect()))
+get_cat_count = lambda cat: cat_count_broadcast.value[cat]
+print(f"cat_count -> {cat_count.take(1)}")
+
 
 # [(term, count), ...]
-stime = time.perf_counter()
 term_count: RDD = terms_cat.flatMap(lambda x: [(t, 1) for t in x[0]]).reduceByKey(lambda a, b: a + b)  # type: ignore
-get_term_count = lambda term: term_count.filter(lambda x: x[0] == term).map(lambda x: x[1]).first()
-print(f"term_count in {time.perf_counter() - stime:.4f}s -> {term_count.take(1)}")
+term_count_broadcast = sc.broadcast(dict(term_count.collect()))
+get_term_count = lambda term: term_count_broadcast.value[term]
+print(f"term_count -> {term_count.take(1)}")
 
 
-# [(term, cat, count), ...]
-stime = time.perf_counter()
+# [((term, cat), count), ...]
 term_cat_count: RDD = terms_cat.flatMap(lambda x: [((t, x[1]), 1) for t in x[0]]).reduceByKey(lambda a, b: a + b)  # type: ignore
-get_term_cat_count = lambda term, cat: term_cat_count.filter(lambda x: x[0] == (term, cat)).map(lambda x: x[1]).first()
-print(f"term_cat_count in {time.perf_counter() - stime:.4f}s -> {term_cat_count.take(1)}")
-
+term_cat_count_broadcast = sc.broadcast(dict(term_cat_count.collect()))
+get_term_cat_count = lambda term, cat: term_cat_count_broadcast.value[(term, cat)]
+print(f"term_cat_count -> {term_cat_count.take(1)}")
 
 # probably faster to compute each of terms above in one go as it takes a while to start up the spark context
 
+# [(cat, [(term, chi2), ...]), ...]
+# fmt: off
+get_chi2 = lambda n11, n10, n01, n00: N * (n11 * n00 - n10 * n01) ** 2 / ((n11 + n10) * (n01 + n00) * (n11 + n01) * (n10 + n00))
+cat_term_chi2s: RDD = term_cat_count \
+    .map(lambda tc_c: (
+        tc_c[0][1], # cat
+        (
+            tc_c[0][0], # term
+            get_chi2(
+                n11=tc_c[1],
+                n10=get_term_count(tc_c[0][0]) - tc_c[1],
+                n01=get_cat_count(tc_c[0][1]) - tc_c[1],
+                n00=N - tc_c[1] - get_term_count(tc_c[0][0]) - get_cat_count(tc_c[0][1])
+            )
+        )
+    )) \
+    .groupByKey()
+# fmt: on
+print(f"cat_term_chi2s -> {cat_term_chi2s.take(1)}")
 
-def get_cat_term_chi(term: str, cat: str) -> tuple[str, str, float]:
-    tc11 = get_term_cat_count(term, cat)
-    tc10 = get_term_count(term) - tc11
-    tc01 = get_cat_count(cat) - tc11
-    tc00 = N - tc11 - tc10 - tc01
-    num = N * (tc11 * tc00 - tc10 * tc01) ** 2
-    den = (tc11 + tc10) * (tc11 + tc01) * (tc10 + tc00) * (tc01 + tc00)
-    assert den != 0
-    return term, cat, num / den
-
-
-stime = time.perf_counter()
-cat_term_chi = term_cat_count.map(lambda x: get_cat_term_chi(x[0][0], x[0][1]))
-print(f"cat_term_chi in {time.perf_counter() - stime:.4f}s -> {cat_term_chi.take(1)}")
-
-
-sc.stop()
+# print all cat_term_chi2s
+for cat, term_chi2s in cat_term_chi2s.collect():
+    print(f"{cat} -> {list(term_chi2s)}")
+    print("\n\n\n\n\n")
