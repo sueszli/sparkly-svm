@@ -16,11 +16,13 @@ sc = SparkContext(conf=conf)
 datapath = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 
 
-# tokenization, case folding, stopword removal
+"""
+tokenization, case folding, stopword removal
+"""
 # fmt: off
 stoppath = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
 stopwords = sc.textFile(str(stoppath)).collect()
-regex = r"[ \t\d()\[\]{}.!?,;:+=\-_\"\'~#@&*%€$§\/]+"
+regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
 get_terms = lambda text: [t for t in re.split(regex, text.lower()) if t and t not in stopwords]
 terms_cat: RDD = sc.textFile(str(datapath)) \
                 .map(json.loads) \
@@ -59,7 +61,7 @@ chi2 computation
 # fmt: off
 N: int = sc.textFile(str(datapath)).count()
 get_chi2 = lambda n11, n10, n01, n00: N * (n11 * n00 - n10 * n01) ** 2 / ((n11 + n10) * (n01 + n00) * (n11 + n01) * (n10 + n00))
-cat_term_chi2s: RDD = term_cat_count \
+cat_term_chi2s_top75: RDD = term_cat_count \
     .map(lambda tc_c: (
         tc_c[0][1], # cat
         (
@@ -77,7 +79,22 @@ cat_term_chi2s: RDD = term_cat_count \
     .mapValues(lambda t_chi2s: sorted(t_chi2s, key=lambda x: x[1], reverse=True)[:75])
 # fmt: on
 
-# print all cat_term_chi2s
-for cat, term_chi2s in cat_term_chi2s.collect():
-    print(f"{cat} -> {list(term_chi2s)}")
-    print("\n\n\n\n\n")
+
+"""
+print results
+"""
+for cat, term_chi2s in cat_term_chi2s_top75.collect():
+    print(f"{cat} {' '.join([f'{term}:{chi2:.2f}' for term, chi2 in term_chi2s])}")
+# get all terms from top75
+sorted_top75_terms = cat_term_chi2s_top75.flatMap(lambda x: [t[0] for t in x[1]]).distinct()
+print(" ".join(sorted_top75_terms.collect()))
+
+
+"""
+save in output_rdd.txt
+"""
+outpath = "output_rdd.txt"
+with open(outpath, "w") as f:
+    for cat, term_chi2s in cat_term_chi2s_top75.collect():
+        f.write(f"{cat} {' '.join([f'{term}:{chi2:.2f}' for term, chi2 in term_chi2s])}\n")
+    f.write(" ".join(sorted_top75_terms.collect()))
