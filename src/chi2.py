@@ -1,33 +1,33 @@
 from pyspark import SparkContext, SparkConf
-
-import argparse
+from pyspark.rdd import RDD
 import pathlib
+
+import json
 import re
-import os
 
-
-conf = SparkConf().setAppName("chi2").setMaster("local[*]")
-sc = SparkContext(conf=conf)
-sc.setLogLevel("ERROR")
 
 # rdd programming: https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds
 
 
+conf = SparkConf().setAppName("chi2").setMaster("local[*]")  # use all cores
+sc = SparkContext(conf=conf)
+sc.setLogLevel("ERROR")
 datapath = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
-text_cat = sc.textFile(str(datapath)).map(lambda x: (x["reviewText"], x["category"]))  # type: ignore
-print(f"progress - text_cat: {text_cat.take(1)}")
 
-# text_cat: RDD = spark.read.json(str(datapath)).rdd.map(lambda x: (x["reviewText"], x["category"]))
+stoppath = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
+stopwords = sc.textFile(str(stoppath)).collect()
+regex = r"[ \t\d()\[\]{}.!?,;:+=\-_\"\'~#@&*%€$§\/]+"
 
+# tokenization, case folding, stopword removal
+# fmt: off
+terms_cat: RDD = sc.textFile(str(datapath)) \
+                .map(json.loads) \
+                .map(lambda x: (x["reviewText"], x["category"])) \
+                .map(lambda x: ([t for t in re.split(regex, x[0].lower()) if t and t not in stopwords], x[1]))
+# fmt: on
+print(f"progress - terms_cat: {terms_cat.take(1)}")
 
-# # tokenization, case folding, stopword removal
-# regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
-# stoppath = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
-# stopwords = sc.textFile(str(stoppath)).collect()
-# terms_cat: RDD = text_cat.map(lambda x: ([t for t in re.split(regex, x[0].lower()) if t and t not in stopwords], x[1]))
-# text_cat.unpersist()
-# del text_cat
-# print(f"progress - tokenized: {terms_cat.take(1)}")
+# use broadcast variable to share cat_count across all nodes
 
 
 # # chi2 calculation
