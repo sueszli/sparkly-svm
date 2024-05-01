@@ -7,12 +7,12 @@ import pathlib
 from typing import Tuple
 import json
 import re
+import logging
 import time
 
 
 conf = SparkConf().setAppName("chi2").setMaster("local[*]")
 sc = SparkContext(conf=conf)
-sc.setLogLevel("ERROR")
 datapath = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 
 
@@ -55,7 +55,6 @@ term_cat_count_broadcast = sc.broadcast(dict(term_cat_count.collect()))
 get_term_cat_count = lambda term, cat: term_cat_count_broadcast.value[(term, cat)]
 print(f"term_cat_count -> {term_cat_count.take(1)}")
 
-# probably faster to compute each of terms above in one go as it takes a while to start up the spark context
 
 # [(cat, [(term, chi2), ...]), ...]
 # fmt: off
@@ -73,7 +72,9 @@ cat_term_chi2s: RDD = term_cat_count \
             )
         )
     )) \
-    .groupByKey()
+    .groupByKey() \
+    .sortByKey() \
+    .mapValues(lambda t_chi2s: sorted(t_chi2s, key=lambda x: x[1], reverse=True)[:75])
 # fmt: on
 print(f"cat_term_chi2s -> {cat_term_chi2s.take(1)}")
 
