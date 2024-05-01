@@ -2,13 +2,10 @@
 
 from pyspark import SparkContext, SparkConf
 from pyspark.rdd import RDD
-import pathlib
 
-from typing import Tuple
+import pathlib
 import json
 import re
-import logging
-import time
 
 
 conf = SparkConf().setAppName("chi2").setMaster("local[*]")
@@ -39,19 +36,16 @@ precompute
 cat_count: RDD = terms_cat.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b)  # type: ignore
 cat_count_broadcast = sc.broadcast(dict(cat_count.collect()))
 get_cat_count = lambda cat: cat_count_broadcast.value[cat]
-print(f"cat_count -> {cat_count.take(1)}")
 
 # [(term, count), ...]
 term_count: RDD = terms_cat.flatMap(lambda x: [(t, 1) for t in x[0]]).reduceByKey(lambda a, b: a + b)  # type: ignore
 term_count_broadcast = sc.broadcast(dict(term_count.collect()))
 get_term_count = lambda term: term_count_broadcast.value[term]
-print(f"term_count -> {term_count.take(1)}")
 
 # [((term, cat), count), ...]
 term_cat_count: RDD = terms_cat.flatMap(lambda x: [((t, x[1]), 1) for t in x[0]]).reduceByKey(lambda a, b: a + b)  # type: ignore
 term_cat_count_broadcast = sc.broadcast(dict(term_cat_count.collect()))
 get_term_cat_count = lambda term, cat: term_cat_count_broadcast.value[(term, cat)]
-print(f"term_cat_count -> {term_cat_count.take(1)}")
 
 
 """
@@ -78,16 +72,7 @@ cat_term_chi2s_top75: RDD = term_cat_count \
     .sortByKey() \
     .mapValues(lambda t_chi2s: sorted(t_chi2s, key=lambda x: x[1], reverse=True)[:75])
 # fmt: on
-
-
-"""
-print results
-"""
-for cat, term_chi2s in cat_term_chi2s_top75.collect():
-    print(f"{cat} {' '.join([f'{term}:{chi2:.2f}' for term, chi2 in term_chi2s])}")
-# get all terms from top75
 sorted_top75_terms = cat_term_chi2s_top75.flatMap(lambda x: [t[0] for t in x[1]]).distinct()
-print(" ".join(sorted_top75_terms.collect()))
 
 
 """
@@ -98,3 +83,6 @@ with open(outpath, "w") as f:
     for cat, term_chi2s in cat_term_chi2s_top75.collect():
         f.write(f"{cat} {' '.join([f'{term}:{chi2:.2f}' for term, chi2 in term_chi2s])}\n")
     f.write(" ".join(sorted_top75_terms.collect()))
+
+terms_cat.unpersist()
+sc.stop()
