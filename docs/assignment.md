@@ -3,7 +3,7 @@ see: https://tuwel.tuwien.ac.at/pluginfile.php/3988544/mod_page/content/1/Exerci
 -   pyspark for text processing
 -   use vpn to log into server: https://jupyter01.lbd.hpc.tuwien.ac.at/
 
-part 1:
+part 1: ✅
 
 -   same as the previous assignment but this time with RDDs and transformations
 -   output to `output_rdd.txt`
