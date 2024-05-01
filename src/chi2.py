@@ -81,7 +81,7 @@ save in output_rdd.txt
 outpath = "output_rdd.txt"
 with open(outpath, "w") as f:
     for cat, term_chi2s in cat_term_chi2s_top75.collect():
-        f.write(f"{cat} {' '.join([f'{term}:{chi2:.2f}' for term, chi2 in term_chi2s])}\n")
+        f.write(f"{cat} {' '.join([f'{term}:{chi2}' for term, chi2 in term_chi2s])}\n")
     f.write(" ".join(sorted_top75_terms.collect()))
 
 terms_cat.unpersist()
