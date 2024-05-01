@@ -24,4 +24,6 @@ print(f"🟢 done with tokenization: {terms_cat.take(1)}")
 
 N: int = terms_cat.count()
 cat_count: RDD = terms_cat.flatMap(lambda x: [(x[1], 1) for _ in x[0]]).reduceByKey(lambda a, b: a + b)  # type: ignore  # [(category, count)]
+print(f"🟢 done with counting categories: {cat_count.take(1)}")
 term_count: RDD = terms_cat.flatMap(lambda x: [(t, 1) for t in x[0]]).reduceByKey(lambda a, b: a + b)  # type: ignore  # [(term, count)]
+print(f"🟢 done with counting terms: {term_count.collect()}")
