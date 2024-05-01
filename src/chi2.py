@@ -72,7 +72,7 @@ cat_term_chi2s_top75: RDD = term_cat_count \
     .sortByKey() \
     .mapValues(lambda t_chi2s: sorted(t_chi2s, key=lambda x: x[1], reverse=True)[:75])
 # fmt: on
-sorted_top75_terms = cat_term_chi2s_top75.flatMap(lambda x: [t[0] for t in x[1]]).distinct()
+sorted_top75_terms = cat_term_chi2s_top75.flatMap(lambda x: [t[0] for t in x[1]]).distinct().sortBy(lambda x: x)
 
 
 """
