@@ -12,7 +12,7 @@ part 1: ✅
 part 2:
 
 -   see: https://spark.apache.org/docs/latest/ml-pipeline.html
--   use the Spark MLlib to build a text classification pipeline (use the dataset/dataframe API anywhere possible)
+-   use Spark MLlib (not the RDD version) to build a text classification pipeline
 -   read in reviews, tokenize, remove stopwords, calculate the TF-IDF and chi-squared values for each word in the reviews
 -   convert the reviews to a classic vector space representation with TFIDF-weighted features
 -   pick top 2000 words with the highest chi-squared values
