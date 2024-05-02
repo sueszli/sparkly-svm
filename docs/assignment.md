@@ -5,13 +5,18 @@ see: https://tuwel.tuwien.ac.at/pluginfile.php/3988544/mod_page/content/1/Exerci
 
 part 1: ✅
 
+-   see: https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds
 -   same as the previous assignment but this time with RDDs and transformations
--   output to `output_rdd.txt`
+-   output to `output_rdd.txt`, compare with the output of the previous assignment
 
 part 2:
 
--   use sparkml and pipelines to create vector representations of the review texts
--   use built in functions for tokenization, stopword removal, and tf-idf calculation, chi-squared feature selection
+-   see: https://spark.apache.org/docs/latest/ml-pipeline.html
+-   use the Spark MLlib to build a text classification pipeline (use the dataset/dataframe API anywhere possible)
+-   read in reviews, tokenize, remove stopwords, calculate the TF-IDF and chi-squared values for each word in the reviews
+-   convert the reviews to a classic vector space representation with TFIDF-weighted features
+-   pick top 2000 words with the highest chi-squared values
+-   output to `output_ds.txt`, compare with the output of the previous assignment
 
 part 3:
 

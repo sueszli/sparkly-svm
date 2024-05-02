@@ -1,5 +1,3 @@
-# rdd programming: https://spark.apache.org/docs/latest/rdd-programming-guide.html#resilient-distributed-datasets-rdds
-
 from pyspark import SparkContext, SparkConf
 from pyspark.rdd import RDD
 
