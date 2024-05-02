@@ -11,10 +11,9 @@ OUTPUT_PATH = "output_ds.txt"
 conf = SparkConf().setAppName("chi2").setMaster("local[*]")
 sc = SparkContext(conf=conf)
 
+
 # read data as DataFrame
 
 spark = SparkSession(sc)
 df = spark.read.json(str(DATA_PATH))
-df.createOrReplaceTempView("reviews")
-
-print(df.show())
+print(df.show(5))
