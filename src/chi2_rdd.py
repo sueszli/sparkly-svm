@@ -8,20 +8,22 @@ import json
 import re
 
 
+DATA_PATH = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
+STOPWORD_PATH = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
+OUTPUT_PATH = "output_rdd.txt"
+
 conf = SparkConf().setAppName("chi2").setMaster("local[*]")
 sc = SparkContext(conf=conf)
-datapath = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 
 
 """
 tokenization, case folding, stopword removal
 """
 # fmt: off
-stoppath = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
-stopwords = sc.textFile(str(stoppath)).collect()
+stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
 get_terms = lambda text: [t for t in re.split(regex, text.lower()) if t and t not in stopwords]
-terms_cat: RDD = sc.textFile(str(datapath)) \
+terms_cat: RDD = sc.textFile(str(DATA_PATH)) \
                 .map(json.loads) \
                 .map(lambda jsn: (jsn["reviewText"], jsn["category"])) \
                 .map(lambda tc: (get_terms(tc[0]), tc[1]))  # type: ignore
@@ -53,7 +55,7 @@ chi2 computation
 """
 # [(cat, [(term, chi2), ...]), ...]
 # fmt: off
-N: int = sc.textFile(str(datapath)).count()
+N: int = sc.textFile(str(DATA_PATH)).count()
 get_chi2 = lambda n11, n10, n01, n00: N * (n11 * n00 - n10 * n01) ** 2 / ((n11 + n10) * (n01 + n00) * (n11 + n01) * (n10 + n00))
 cat_term_chi2s_top75: RDD = term_cat_count \
     .map(lambda tc_c: (
@@ -78,8 +80,7 @@ sorted_top75_terms = cat_term_chi2s_top75.flatMap(lambda x: [t[0] for t in x[1]]
 """
 save in output_rdd.txt
 """
-outpath = "output_rdd.txt"
-with open(outpath, "w") as f:
+with open(OUTPUT_PATH, "w") as f:
     for cat, term_chi2s in cat_term_chi2s_top75.collect():
         f.write(f"{cat} {' '.join([f'{term}:{chi2}' for term, chi2 in term_chi2s])}\n")
     f.write(" ".join(sorted_top75_terms.collect()))
