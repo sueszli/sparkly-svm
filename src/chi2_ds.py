@@ -51,15 +51,6 @@ df = indexer.fit(df).transform(df)
 selector = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label")
 df = selector.fit(df).transform(df)
 
-# print term:chi2 for each term per category
-def print_chi2(df):
-    for row in df.collect():
-        print(f"term: {row.term}, chi2: {row.chi2}")
-        print(f"term: {row.term}, chi2: {row.chi2}", file=open(OUTPUT_PATH, "a"))
-
-df = df.select("terms", "selectedFeatures", "label")
-df = df.withColumn("term", udf(lambda x: x[0], StringType())(df.terms))
-df = df.withColumn("chi2", udf(lambda x: x[1], ArrayType())(df.selectedFeatures))
-print_chi2(df)
+# ...
 
 print(df.show())
