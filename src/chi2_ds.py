@@ -1,8 +1,9 @@
+# fmt: off
+
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-from pyspark.ml.feature import RegexTokenizer
-from pyspark.ml.feature import StopWordsRemover
-
+from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF, ChiSqSelector, StringIndexer
+from pyspark.ml.linalg import Vectors
 import pathlib
 
 
@@ -18,20 +19,45 @@ spark = SparkSession(sc)
 """
 tokenization, case folding, stopword removal
 """
-# fmt: off
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
-df = 
+df = RegexTokenizer(inputCol="reviewText", outputCol="terms", pattern=regex) \
+    .transform(spark.read.json(str(DATA_PATH))) \
+    .select("terms", "category")
 
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 df = StopWordsRemover(inputCol="terms", outputCol="filtered", stopWords=stopwords) \
-    .transform(
-        
-        RegexTokenizer(inputCol="reviewText", outputCol="terms", pattern=regex) \
-            .transform(spark.read.json(str(DATA_PATH))) \
-            .select("terms", "category")
-    ) \
+    .transform(df) \
     .select("filtered", "category") \
     .withColumnRenamed("filtered", "terms")
-# fmt: on
 
-print(df.show())
+
+"""
+tf-idf vectorization
+"""
+hashingTF = HashingTF(inputCol="terms", outputCol="rawFeatures")
+tf = hashingTF.transform(df)
+
+df = IDF(inputCol="rawFeatures", outputCol="features") \
+    .fit(tf) \
+    .transform(tf) \
+    .select("features", "category")
+
+
+"""
+top 2000 chi2 features
+"""
+df = StringIndexer(inputCol="category", outputCol="label") \
+    .fit(df) \
+    .transform(df)
+
+df = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label") \
+    .fit(df) \
+    .transform(df) \
+    .select("selectedFeatures", "category")
+
+# selected terms
+selected_terms = df.schema["selectedFeatures"].metadata["ml_attr"]["attrs"]["numeric"]
+selected_terms = sorted(selected_terms, key=lambda x: x["idx"])
+selected_terms = [x["name"] for x in selected_terms]
+
+print(selected_terms[:10])

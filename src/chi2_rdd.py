@@ -1,3 +1,5 @@
+# fmt: off
+
 from pyspark import SparkContext, SparkConf
 from pyspark.rdd import RDD
 
@@ -17,7 +19,6 @@ sc = SparkContext(conf=conf)
 """
 tokenization, case folding, stopword removal
 """
-# fmt: off
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
 get_terms = lambda text: [t for t in re.split(regex, text.lower()) if t and t not in stopwords]
@@ -26,11 +27,10 @@ terms_cat: RDD = sc.textFile(str(DATA_PATH)) \
                 .map(lambda jsn: (jsn["reviewText"], jsn["category"])) \
                 .map(lambda tc: (get_terms(tc[0]), tc[1]))  # type: ignore
 terms_cat.persist()
-# fmt: on
 
 
 """
-precompute
+chi2 calculation
 """
 # [(cat, count), ...]
 cat_count: RDD = terms_cat.map(lambda x: (x[1], 1)).reduceByKey(lambda a, b: a + b)  # type: ignore
@@ -47,12 +47,7 @@ term_cat_count: RDD = terms_cat.flatMap(lambda x: [((t, x[1]), 1) for t in x[0]]
 term_cat_count_broadcast = sc.broadcast(dict(term_cat_count.collect()))
 get_term_cat_count = lambda term, cat: term_cat_count_broadcast.value[(term, cat)]
 
-
-"""
-chi2 computation
-"""
 # [(cat, [(term, chi2), ...]), ...]
-# fmt: off
 N: int = sc.textFile(str(DATA_PATH)).count()
 get_chi2 = lambda n11, n10, n01, n00: N * (n11 * n00 - n10 * n01) ** 2 / ((n11 + n10) * (n01 + n00) * (n11 + n01) * (n10 + n00))
 cat_term_chi2s_top75: RDD = term_cat_count \
@@ -71,7 +66,6 @@ cat_term_chi2s_top75: RDD = term_cat_count \
     .groupByKey() \
     .sortByKey() \
     .mapValues(lambda t_chi2s: sorted(t_chi2s, key=lambda x: x[1], reverse=True)[:75])
-# fmt: on
 sorted_top75_terms = cat_term_chi2s_top75.flatMap(lambda x: [t[0] for t in x[1]]).distinct().sortBy(lambda x: x)
 
 
