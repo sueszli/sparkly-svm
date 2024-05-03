@@ -1,9 +1,7 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-from pyspark.ml.feature import Tokenizer
 from pyspark.ml.feature import RegexTokenizer
 from pyspark.ml.feature import StopWordsRemover
-
 
 import pathlib
 
@@ -22,13 +20,16 @@ tokenization, case folding, stopword removal
 """
 # fmt: off
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
-df = RegexTokenizer(inputCol="reviewText", outputCol="terms", pattern=regex) \
-    .transform(spark.read.json(str(DATA_PATH))) \
-    .select("terms", "category")
+df = 
 
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 df = StopWordsRemover(inputCol="terms", outputCol="filtered", stopWords=stopwords) \
-    .transform(df) \
+    .transform(
+        
+        RegexTokenizer(inputCol="reviewText", outputCol="terms", pattern=regex) \
+            .transform(spark.read.json(str(DATA_PATH))) \
+            .select("terms", "category")
+    ) \
     .select("filtered", "category") \
     .withColumnRenamed("filtered", "terms")
 # fmt: on
