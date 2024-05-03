@@ -36,8 +36,6 @@ df = StopWordsRemover(inputCol="terms", outputCol="filtered", stopWords=stopword
 
 """
 Convert the review texts to a classic vector space representation with TFIDF-weighted features (using 2000 top terms overall)
-
-- HashingTF, IDF, ChiSqSelector
 """
 # compute {term hash: term idf} for each review
 tf = HashingTF(inputCol="terms", outputCol="rawFeatures")
