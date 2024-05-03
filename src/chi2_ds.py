@@ -35,7 +35,8 @@ df = StopWordsRemover(inputCol="terms", outputCol="filtered", stopWords=stopword
 
 
 """
-Convert the review texts to a classic vector space representation with TFIDF-weighted features (using 2000 top terms overall)
+convert the review texts to a classic vector space representation
+with TFIDF-weighted features (using 2000 top terms overall)
 """
 # compute {term hash: term idf} for each review
 tf = HashingTF(inputCol="terms", outputCol="rawFeatures")
@@ -50,6 +51,6 @@ df = indexer.fit(df).transform(df)
 selector = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label")
 df = selector.fit(df).transform(df)
 
-# ???
+# 
 
 print(df.show())
