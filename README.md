@@ -1,4 +1,4 @@
-# docker container
+# running in container
 
 run the installation script.
 
@@ -10,7 +10,7 @@ based on:
 -   https://github.com/jupyter/docker-stacks/blob/main/images/pyspark-notebook/Dockerfile
 -   https://jupyter-docker-stacks.readthedocs.io/en/latest/using/specifics.html
 
-# local development
+# running locally
 
 pyspark doesn't work with the latest 3.12 python and java 21 (as of may 2024) because of an incompatibility issue with `pyarrow`.
 
