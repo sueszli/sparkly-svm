@@ -10,7 +10,6 @@ open http://127.0.0.1:8888/
 # stop and clean up
 docker-compose down
 
-# cleanup (optional)
 ids=$(docker ps -a -q)
 for id in $ids; do docker stop $id; done
 for id in $ids; do docker rm $id; done
