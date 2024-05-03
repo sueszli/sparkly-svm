@@ -40,7 +40,7 @@ tf = hashingTF.transform(df)
 df = IDF(inputCol="rawFeatures", outputCol="features") \
     .fit(tf) \
     .transform(tf) \
-    .select("features", "category")
+    .select("terms", "features", "category")
 
 
 """
@@ -53,11 +53,13 @@ df = StringIndexer(inputCol="category", outputCol="label") \
 df = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label") \
     .fit(df) \
     .transform(df) \
-    .select("selectedFeatures", "category")
+    .select("terms", "selectedFeatures", "category")
 
-# selected terms
-selected_terms = df.schema["selectedFeatures"].metadata["ml_attr"]["attrs"]["numeric"]
-selected_terms = sorted(selected_terms, key=lambda x: x["idx"])
-selected_terms = [x["name"] for x in selected_terms]
+# group by category
+df = df.groupBy("category") \
+    .agg({"selectedFeatures": "collect_list", "terms": "collect_list"}) \
+    .withColumnRenamed("collect_list(selectedFeatures)", "selectedFeatures") \
+    .withColumnRenamed("collect_list(terms)", "terms")
 
-print(selected_terms[:10])
+# sort by category
+df = df.sort("category")
