@@ -61,5 +61,4 @@ df = df.groupBy("category") \
     .withColumnRenamed("collect_list(selectedFeatures)", "selectedFeatures") \
     .withColumnRenamed("collect_list(terms)", "terms")
 
-# sort by category
-df = df.sort("category")
+print(df.show())
