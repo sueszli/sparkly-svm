@@ -4,6 +4,9 @@ from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF, ChiSqSelector, StringIndexer
 from pyspark.ml.linalg import Vectors
+from pyspark.sql.functions import udf
+from pyspark.sql.types import ArrayType, StringType
+
 import pathlib
 
 
@@ -41,17 +44,14 @@ tf = HashingTF(inputCol="terms", outputCol="rawFeatures")
 idf = IDF(inputCol="rawFeatures", outputCol="features")
 df = idf.fit(tf.transform(df)).transform(tf.transform(df))
 
+# encode category to numeric label
+indexer = StringIndexer(inputCol="category", outputCol="label")
+df = indexer.fit(df).transform(df)
 
-for row in df.collect():
-    terms = row.terms
-    idfs = row.features
-    print(zip(terms, idfs))
-    print()
+# compute top 2000 highest chi-squared features
+selector = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label")
+df = selector.fit(df).transform(df)
 
-# indexer = StringIndexer(inputCol="category", outputCol="label")
-# df = indexer.fit(df).transform(df)
-
-# selector = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label")
-# tfidf = selector.fit(df).transform(df)
+# ???
 
 print(df.show())
