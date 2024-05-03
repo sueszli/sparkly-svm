@@ -10,6 +10,7 @@ RUN pip install numpy pandas matplotlib seaborn scikit-learn
 EXPOSE 8888 4040 4041
 
 # mount the current directory to the container, set as working directory
+# this is the default home directory given by the jupyter/pyspark-notebook image
 VOLUME ["/home/jovyan/work"]
 WORKDIR /home/jovyan/work
 
