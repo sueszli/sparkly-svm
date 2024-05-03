@@ -36,11 +36,22 @@ Convert the review texts to a classic vector space representation with TFIDF-wei
 
 - HashingTF, IDF, ChiSqSelector
 """
-hashingTF = HashingTF(inputCol="terms", outputCol="rawFeatures", numFeatures=2000)
+# compute {term hash: term idf} for each review
+tf = HashingTF(inputCol="terms", outputCol="rawFeatures")
 idf = IDF(inputCol="rawFeatures", outputCol="features")
-chi2 = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures")
-df = hashingTF.transform(df)
-df = idf.fit(df).transform(df)
-df = chi2.fit(df).transform(df)
+df = idf.fit(tf.transform(df)).transform(tf.transform(df))
+
+
+for row in df.collect():
+    terms = row.terms
+    idfs = row.features
+    print(zip(terms, idfs))
+    print()
+
+# indexer = StringIndexer(inputCol="category", outputCol="label")
+# df = indexer.fit(df).transform(df)
+
+# selector = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label")
+# tfidf = selector.fit(df).transform(df)
 
 print(df.show())
