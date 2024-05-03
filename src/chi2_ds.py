@@ -1,8 +1,10 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-
+from pyspark.ml.feature import Tokenizer
+from pyspark.sql.functions import col
 
 import pathlib
+
 
 DATA_PATH = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 STOPWORD_PATH = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
@@ -15,4 +17,7 @@ spark = SparkSession(sc)
 df = spark.read.json(str(DATA_PATH))
 df = df.select("reviewText", "category")
 
-print(df.show(5))
+# tokenize
+tokenizer = Tokenizer(inputCol="reviewText", outputCol="words")
+df = tokenizer.transform(df)
+print(df.show())
