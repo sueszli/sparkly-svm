@@ -32,33 +32,15 @@ df = StopWordsRemover(inputCol="terms", outputCol="filtered", stopWords=stopword
 
 
 """
-tf-idf vectorization
+Convert the review texts to a classic vector space representation with TFIDF-weighted features (using 2000 top terms overall)
+
+- HashingTF, IDF, ChiSqSelector
 """
-hashingTF = HashingTF(inputCol="terms", outputCol="rawFeatures")
-tf = hashingTF.transform(df)
-
-df = IDF(inputCol="rawFeatures", outputCol="features") \
-    .fit(tf) \
-    .transform(tf) \
-    .select("terms", "features", "category")
-
-
-"""
-top 2000 chi2 features
-"""
-df = StringIndexer(inputCol="category", outputCol="label") \
-    .fit(df) \
-    .transform(df)
-
-df = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label") \
-    .fit(df) \
-    .transform(df) \
-    .select("terms", "selectedFeatures", "category")
-
-# group by category
-df = df.groupBy("category") \
-    .agg({"selectedFeatures": "collect_list", "terms": "collect_list"}) \
-    .withColumnRenamed("collect_list(selectedFeatures)", "selectedFeatures") \
-    .withColumnRenamed("collect_list(terms)", "terms")
+hashingTF = HashingTF(inputCol="terms", outputCol="rawFeatures", numFeatures=2000)
+idf = IDF(inputCol="rawFeatures", outputCol="features")
+chi2 = ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures")
+df = hashingTF.transform(df)
+df = idf.fit(df).transform(df)
+df = chi2.fit(df).transform(df)
 
 print(df.show())
