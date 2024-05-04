@@ -39,20 +39,16 @@ conf = SparkConf() \
     .set("spark.driver.memory", "4g") \
     .set("spark.driver.maxResultSize", "2g") \
     .set("spark.default.parallelism", "12")
-
 sc = SparkContext(conf=conf)
 spark = SparkSession(sc)
 
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 pipeline = Pipeline(stages=[
-    # get features
     RegexTokenizer(inputCol="reviewText", outputCol="rawTerms", pattern=regex),
     StopWordsRemover(inputCol="rawTerms", outputCol="terms", stopWords=stopwords),
-
     CountVectorizer(inputCol="terms", outputCol="rawFeatures"),
     IDF(inputCol="rawFeatures", outputCol="features"),
-
     StringIndexer(inputCol="category", outputCol="label"),
     ChiSqSelector(featuresCol="features", outputCol="selectedFeatures", labelCol="label", numTopFeatures=2000),
 
