@@ -4,12 +4,12 @@ first run the provided shell script.
 
 then either work inside the container or use a jupyter notebook via the exposed port.
 
-nice tutorial on how to work in a container:
+nice tutorial on how to work inside a container:
 
 -   https://www.youtube.com/watch?v=0H2miBK_gAk
 -   https://github.com/patrickloeber/python-docker-tutorial
 
-used image:
+the image we used:
 
 -   https://hub.docker.com/r/jupyter/pyspark-notebook
 -   https://github.com/jupyter/docker-stacks/blob/main/images/pyspark-notebook/Dockerfile
