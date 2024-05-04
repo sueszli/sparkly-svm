@@ -64,7 +64,7 @@ train, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
 param_grid = ParamGridBuilder() \
     .addGrid(ChiSqSelector.numTopFeatures, [100]) \
     .addGrid(LinearSVC.regParam, [0.1]) \
-    .addGrid(LinearSVC.maxIter, [100]) \
+    .addGrid(LinearSVC.maxIter, [10]) \
     .build()
 
 # define cross validator
