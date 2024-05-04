@@ -4,7 +4,7 @@ first run the provided shell script.
 
 then either work inside the container or use a jupyter notebook via the exposed port.
 
-nice tutorial:
+nice tutorial on how to work in a container:
 
 -   https://www.youtube.com/watch?v=0H2miBK_gAk
 -   https://github.com/patrickloeber/python-docker-tutorial
