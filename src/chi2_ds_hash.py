@@ -1,7 +1,8 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer
+from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF, StringIndexer, ChiSqSelector
 from pyspark.ml import Pipeline
+from pyspark.sql.functions import col
 
 import pathlib
 
@@ -17,13 +18,18 @@ spark = SparkSession(sc)
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 stages = [
+    # tokenize, remove stopwords
     RegexTokenizer(inputCol="reviewText", outputCol="rawTerms", pattern=regex),
     StopWordsRemover(inputCol="rawTerms", outputCol="terms", stopWords=stopwords),
-
-    CountVectorizer(inputCol="terms", outputCol="rawFeatures"),
+    
+    # hashing, tf-idf
+    HashingTF(inputCol="terms", outputCol="rawFeatures"),
     IDF(inputCol="rawFeatures", outputCol="features"),
-
+    
+    # label encoding
     StringIndexer(inputCol="category", outputCol="label"),
+    
+    # chi2 selection of top 2000 features
     ChiSqSelector(featuresCol="features", outputCol="selectedFeatures", labelCol="label", numTopFeatures=2000),
 ]
 
@@ -32,6 +38,12 @@ df = spark.read.json(str(DATA_PATH)).select("reviewText", "category")
 result = pipeline.fit(df).transform(df)
 result.show()
 
+
+"""
+idk how to print the terms selected by the ChiSqSelector.
+
+a transformation process (like hashing) inherently loses the direct mapping between the original terms and the selected features.
+"""
 
 for row in result.collect()[0:5]:
     selected_features_dict = dict(zip(row.selectedFeatures.indices, row.selectedFeatures.values))
