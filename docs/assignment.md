@@ -9,7 +9,7 @@ part 1: ✅
 -   same as the previous assignment but this time with RDDs and transformations
 -   output to `output_rdd.txt`, compare with the output of the previous assignment
 
-part 2:
+part 2: ✅
 
 -   see: https://spark.apache.org/docs/latest/ml-pipeline.html
 -   use Spark MLlib (not the RDD version) to build a text classification pipeline
@@ -18,7 +18,7 @@ part 2:
 -   pick top 2000 words with the highest chi-squared values
 -   output to `output_ds.txt`, compare with the output of the previous assignment
 
-part 3:
+part 3: ✅ (still needs the right model configs)
 
 -   Train a Support Vector Machine text classifier from the features extracted from the first pipeline.
 -   The goal is to learn a model that can predict the product category from a review's text.
