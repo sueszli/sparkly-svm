@@ -1,4 +1,3 @@
-# fmt: off
 from pyspark import SparkContext, SparkConf
 from pyspark.rdd import RDD
 
