@@ -1,3 +1,4 @@
+# fmt: off
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer, CountVectorizerModel
@@ -32,7 +33,6 @@ df = spark.read.json(str(DATA_PATH)).select("reviewText", "category")
 model = pipeline.fit(df)
 result = model.transform(df)
 result.show()
-
 
 # get all selected features through chisq index from vocabulary
 cv_model: CountVectorizerModel = model.stages[2] # type: ignore

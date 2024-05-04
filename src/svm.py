@@ -1,3 +1,4 @@
+# fmt: off
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer, CountVectorizerModel, Normalizer
@@ -28,11 +29,17 @@ Use a grid search for parameter optimization:
 Use the MulticlassClassificationEvaluator to estimate performance of your trained classifiers on the test set, using F1 measure as criterion.
 """
 
-
 DATA_PATH = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 STOPWORD_PATH = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
 
-conf = SparkConf().setAppName("svm").setMaster("local[*]")
+conf = SparkConf() \
+    .setAppName("svm") \
+    .setMaster("local[*]") \
+    .set("spark.executor.memory", "4g") \
+    .set("spark.driver.memory", "4g") \
+    .set("spark.driver.maxResultSize", "2g") \
+    .set("spark.default.parallelism", "12")
+
 sc = SparkContext(conf=conf)
 spark = SparkSession(sc)
 
@@ -82,4 +89,4 @@ predictions = cv_model.transform(test)
 # evaluate
 evaluator = MulticlassClassificationEvaluator(metricName="f1")
 f1 = evaluator.evaluate(predictions)
-print(f"F1 score: {f1}")
+print(f"f1 score: {f1}")

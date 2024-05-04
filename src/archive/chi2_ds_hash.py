@@ -1,3 +1,4 @@
+# fmt: off
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF, StringIndexer, ChiSqSelector
