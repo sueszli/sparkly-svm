@@ -65,7 +65,7 @@ train, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
 
 # define search grid (make it super small for faster execution)
 param_grid = ParamGridBuilder() \
-    .addGrid(ChiSqSelector.numTopFeatures, [100]) \
+    .addGrid(ChiSqSelector.numTopFeatures, [10]) \
     .addGrid(LinearSVC.regParam, [0.1]) \
     .addGrid(LinearSVC.maxIter, [10]) \
     .build()
