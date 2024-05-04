@@ -39,14 +39,20 @@ pipeline = Pipeline(stages=stages)
 df = spark.read.json(str(DATA_PATH)).select("reviewText", "category")
 model = pipeline.fit(df)
 result_df = model.transform(df)
-# result_df = result_df.select("category", "label", "terms", "selectedFeatures")
+result_df.show()
 
-
-# TODO: get column with original terms from the chi-squared selected features
-
-
-
-
+# print the terms selected by the ChiSqSelector
 for row in result_df.collect():
-    print(row["terms"], row["rawFeatures"], row["features"], row["selectedFeatures"])
-    print("\n\n\n")
+    selected_features_dict = dict(zip(row["selectedFeatures"].indices, row["selectedFeatures"].values))
+    selected_features_dict = {k: v for k, v in sorted(selected_features_dict.items(), key=lambda item: item[1], reverse=True)}
+
+    print(f"category: {row['category']}")
+    print(f"rawTerms: {row['rawTerms']}")
+    print(f"terms: {row['terms']}")
+
+    print(f"lengths: rawTerms {len(row['rawTerms'])}, terms {len(row['terms'])}, rawFeatures {len(row['rawFeatures'].values)}, features {len(row['features'].values)}, selectedFeatures {len(selected_features_dict)}")
+
+    for term_idx, score in selected_features_dict.items():
+        print(f"\t{term_idx}: {score}")
+
+    print("\n\n")
