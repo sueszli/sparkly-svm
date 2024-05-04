@@ -1,6 +1,6 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
-from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer
+from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer, CountVectorizerModel
 from pyspark.ml import Pipeline
 
 import pathlib
@@ -29,17 +29,20 @@ stages = [
 
 pipeline = Pipeline(stages=stages)
 df = spark.read.json(str(DATA_PATH)).select("reviewText", "category")
-result = pipeline.fit(df).transform(df)
+model = pipeline.fit(df)
+result = model.transform(df)
 result.show()
 
 
-for row in result.collect()[0:5]:
-    selected_features_dict = dict(zip(row.selectedFeatures.indices, row.selectedFeatures.values))
-    selected_features_dict = {k: v for k, v in sorted(selected_features_dict.items(), key=lambda item: item[1], reverse=True)}
+# get all selected features through chisq index from vocabulary
+cv_model: CountVectorizerModel = model.stages[2] # type: ignore
+chisq_model: ChiSqSelector = model.stages[5] # type: ignore
 
-    print(f"{len(row.category)=} - {len(row.rawTerms)=} - {len(row.terms)=} - {len(row.rawFeatures.values)=} - {len(row.features.values)=} - {len(selected_features_dict)=}")
-    print(f"{row.terms=}")
-    print(f"{row.rawFeatures.values=}")
-    print(f"{row.features.values=}")
-    print(f"{selected_features_dict=}")
-    print("\n\n\n")
+cv_vocab: list[str] = cv_model.vocabulary
+chisq_idx: list[int] = chisq_model.selectedFeatures # type: ignore
+
+selection: list[str] = sorted(set([cv_vocab[i] for i in chisq_idx]))
+
+print(f"{len(selection)=}, {len(cv_vocab)=}, {len(chisq_idx)=}")
+with open(OUTPUT_PATH, "w") as f:
+    f.write("\n".join(selection))
