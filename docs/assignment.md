@@ -20,4 +20,14 @@ part 2:
 
 part 3:
 
--   train a SVM as a text classifier on the vector representations to predict the category of the review
+-   Train a Support Vector Machine text classifier from the features extracted from the first pipeline.
+-   The goal is to learn a model that can predict the product category from a review's text.
+-   Since we are dealing with multi-class problems, make sure to put a strategy in place that allows binary classifiers to be applicable.
+-   Apply vector length normalization before feeding the feature vectors into the classifier (use Normalizer with L2 norm).
+-   Make sure to:
+    -   Split the review data into training, validation, and test set.
+    -   Make experiments reproducible.
+    -   Use a grid search for parameter optimization:
+        -   Compare chi square overall top 2000 filtered features with another, heavier filtering with much less dimensionality (see Spark ML documentation for options).
+        -   Compare different SVM settings by varying the regularization parameter (choose 3 different values), standardization of training features (2 values), and maximum number of iterations (2 values).
+    -   Use the MulticlassClassificationEvaluator to estimate performance of your trained classifiers on the test set, using F1 measure as criterion.
