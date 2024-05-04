@@ -1,14 +1,15 @@
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SparkSession
+from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer, CountVectorizerModel, Normalizer
 from pyspark.ml import Pipeline
-from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, HashingTF, IDF, StringIndexer, ChiSqSelector, CountVectorizer, Normalizer
+
 import pathlib
 
 
 DATA_PATH = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 STOPWORD_PATH = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
 
-conf = SparkConf().setAppName("chi2").setMaster("local[*]")
+conf = SparkConf().setAppName("svm").setMaster("local[*]")
 sc = SparkContext(conf=conf)
 spark = SparkSession(sc)
 
@@ -18,8 +19,10 @@ stages = [
     # get features
     RegexTokenizer(inputCol="reviewText", outputCol="rawTerms", pattern=regex),
     StopWordsRemover(inputCol="rawTerms", outputCol="terms", stopWords=stopwords),
-    HashingTF(inputCol="terms", outputCol="rawFeatures"),
+
+    CountVectorizer(inputCol="terms", outputCol="rawFeatures"),
     IDF(inputCol="rawFeatures", outputCol="features"),
+
     StringIndexer(inputCol="category", outputCol="label"),
     ChiSqSelector(featuresCol="features", outputCol="selectedFeatures", labelCol="label", numTopFeatures=2000),
 
@@ -29,7 +32,8 @@ stages = [
 
 pipeline = Pipeline(stages=stages)
 df = spark.read.json(str(DATA_PATH)).select("reviewText", "category")
-result = pipeline.fit(df).transform(df)
+model = pipeline.fit(df)
+result = model.transform(df)
 result.show()
 
 
