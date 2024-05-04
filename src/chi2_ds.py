@@ -38,8 +38,6 @@ for row in result.collect()[0:5]:
     selected_features_dict = {k: v for k, v in sorted(selected_features_dict.items(), key=lambda item: item[1], reverse=True)}
 
     print(f"{len(row.category)=} - {len(row.rawTerms)=} - {len(row.terms)=} - {len(row.rawFeatures.values)=} - {len(row.features.values)=} - {len(selected_features_dict)=}")
-    print(f"{row.category=}")
-    print(f"{row.rawTerms=}")
     print(f"{row.terms=}")
     print(f"{row.rawFeatures.values=}")
     print(f"{row.features.values=}")
