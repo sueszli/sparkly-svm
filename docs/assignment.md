@@ -20,6 +20,8 @@ part 2: ✅
 
 part 3: ✅ (still needs the right model configs)
 
+see relevant slides: https://tuwel.tuwien.ac.at/pluginfile.php/3987338/mod_resource/content/1/Lecture5_%20Spark_SparkML.pdf
+
 -   Train a Support Vector Machine text classifier from the features extracted from the first pipeline.
 -   The goal is to learn a model that can predict the product category from a review's text.
 -   Since we are dealing with multi-class problems, make sure to put a strategy in place that allows binary classifiers to be applicable.
