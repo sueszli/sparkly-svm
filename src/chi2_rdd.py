@@ -20,7 +20,7 @@ tokenization, case folding, stopword removal
 """
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
-get_terms = lambda text: [t for t in re.split(regex, text.lower()) if t and t not in stopwords]
+get_terms = lambda text: list(set([t for t in re.split(regex, text.lower()) if t and t not in stopwords and len(t) > 1]))
 terms_cat: RDD = sc.textFile(str(DATA_PATH)) \
                 .map(json.loads) \
                 .map(lambda jsn: (jsn["reviewText"], jsn["category"])) \
@@ -47,18 +47,19 @@ term_cat_count_broadcast = sc.broadcast(dict(term_cat_count.collect()))
 get_term_cat_count = lambda term, cat: term_cat_count_broadcast.value[(term, cat)]
 
 # [(cat, [(term, chi2), ...]), ...]
-N: int = sc.textFile(str(DATA_PATH)).count()
-get_chi2 = lambda n11, n10, n01, n00: N * (n11 * n00 - n10 * n01) ** 2 / ((n11 + n10) * (n01 + n00) * (n11 + n01) * (n10 + n00))
+# N: int = sc.textFile(str(DATA_PATH)).count() --> reading the file again is way more expensive
+N: int = sum(cat_count_broadcast.value.values())
+get_chi2 = lambda A, B, C, D: N * (A * D - B * C) ** 2 / ((A + B) * (C + D) * (A + C) * (B + D))
 cat_term_chi2s_top75: RDD = term_cat_count \
     .map(lambda tc_c: (
         tc_c[0][1], # cat
         (
             tc_c[0][0], # term
             get_chi2(
-                n11=tc_c[1],
-                n10=get_term_count(tc_c[0][0]) - tc_c[1],
-                n01=get_cat_count(tc_c[0][1]) - tc_c[1],
-                n00=N - tc_c[1] - get_term_count(tc_c[0][0]) - get_cat_count(tc_c[0][1])
+                A=tc_c[1],
+                B=get_term_count(tc_c[0][0]) - tc_c[1],
+                C=get_cat_count(tc_c[0][1]) - tc_c[1],
+                D=N - tc_c[1] - get_term_count(tc_c[0][0]) - get_cat_count(tc_c[0][1])
             )
         )
     )) \
