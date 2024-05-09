@@ -15,4 +15,8 @@ VOLUME ["/home/jovyan/work"]
 WORKDIR /home/jovyan/work
 
 # allow notebook access without token
-CMD ["start-notebook.sh", "--NotebookApp.token=''", "--NotebookApp.password=''"]
+ENV JUPYTER_ENABLE_LAB=yes
+CMD ["start-notebook.sh",
+  "--ip=0.0.0.0", "--no-browser", "--allow-root",
+  "--ServerApp.token=''", "--ServerApp.password=''",
+  "--ServerApp.allow_origin='*'", "--ServerApp.disable_check_xsrf=True"]
