@@ -4,7 +4,7 @@ from pyspark.sql import SparkSession
 from pyspark.ml.feature import RegexTokenizer, StopWordsRemover, IDF, StringIndexer, ChiSqSelector, CountVectorizer, CountVectorizerModel, Normalizer
 from pyspark.ml import Pipeline
 from pyspark.ml.classification import LinearSVC, OneVsRest
-from pyspark.ml.tuning import ParamGridBuilder, CrossValidator
+from pyspark.ml.tuning import ParamGridBuilder, CrossValidator, TrainValidationSplit
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 import pandas as pd
 import numpy as np
@@ -12,6 +12,8 @@ from pyspark.sql.functions import col
 from sklearn.model_selection import train_test_split
 
 import pathlib
+
+import argparse
 
 
 """
@@ -29,6 +31,13 @@ Use a grid search for parameter optimization:
 Use the MulticlassClassificationEvaluator to estimate performance of your trained classifiers on the test set, using F1 measure as criterion.
 """
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cross-val", action='store_true')
+    return parser.parse_args()
+
+args = parse_args()
+
 DATA_PATH = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 STOPWORD_PATH = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
 
@@ -44,24 +53,25 @@ spark = SparkSession(sc)
 
 regex = r'[ \t\d()\[\]{}.!?,;:+=\-_"\'~#@&*%€$§\/]+'
 stopwords = sc.textFile(str(STOPWORD_PATH)).collect()
-pipeline = Pipeline(stages=[
+preprocessing_pipeline = Pipeline(stages=[
     RegexTokenizer(inputCol="reviewText", outputCol="rawTerms", pattern=regex),
     StopWordsRemover(inputCol="rawTerms", outputCol="terms", stopWords=stopwords),
     CountVectorizer(inputCol="terms", outputCol="rawFeatures"),
     IDF(inputCol="rawFeatures", outputCol="features"),
-    StringIndexer(inputCol="category", outputCol="label"),
-    ChiSqSelector(featuresCol="features", outputCol="selectedFeatures", labelCol="label", numTopFeatures=2000),
+    StringIndexer(inputCol="category", outputCol="label"),   
+])
 
-    # l2-normalize vector length
+estimator_pipeline = Pipeline(stages=[
+    ChiSqSelector(numTopFeatures=2000, featuresCol="features", outputCol="selectedFeatures", labelCol="label"),
     Normalizer(inputCol="selectedFeatures", outputCol="normalizedFeatures"),
-
-    # train SVM
     OneVsRest(classifier=LinearSVC(featuresCol="normalizedFeatures", labelCol="label"))
 ])
 
+
 # split data
 df = spark.read.json(str(DATA_PATH)).select("reviewText", "category")
-train, val, test = df.randomSplit([0.6, 0.2, 0.2], seed=42)
+df = preprocessing_pipeline.fit(df).transform(df)
+train, test = df.randomSplit([0.8, 0.2], seed=42)
 
 # define search grid (make it super small for faster execution)
 param_grid = ParamGridBuilder() \
@@ -70,11 +80,24 @@ param_grid = ParamGridBuilder() \
     .addGrid(LinearSVC.maxIter, [10]) \
     .build()
 
+# define evaluator
+evaluator = MulticlassClassificationEvaluator(metricName="f1")
+
 # define cross validator
-cv = CrossValidator(estimator=pipeline, 
+if args.cross_val:
+    cv = CrossValidator(estimator=estimator_pipeline, 
+                        estimatorParamMaps=param_grid,
+                        evaluator=evaluator,
+                        parallelism=10,
+                        numFolds=3,
+                        seed=42)
+else:
+    cv = TrainValidationSplit(estimator=estimator_pipeline, 
                     estimatorParamMaps=param_grid,
-                    evaluator=MulticlassClassificationEvaluator(metricName="f1"),
-                    numFolds=3)
+                    evaluator=evaluator,
+                    trainRatio=0.8,
+                    parallelism=10,
+                    seed=42)
 
 # train model
 cv_model = cv.fit(train)
@@ -83,6 +106,5 @@ cv_model = cv.fit(train)
 predictions = cv_model.transform(test)
 
 # evaluate
-evaluator = MulticlassClassificationEvaluator(metricName="f1")
 f1 = evaluator.evaluate(predictions)
 print(f"f1 score: {f1}")
