@@ -1,0 +1,233 @@
+2024-05-13 00:08:24,770:INFO:Stopwords loaded from: Exercise_2/sparkly-svm/data/stopwords.txt
+2024-05-13 00:08:24,770:INFO:Data loaded from hdfs: hdfs:///user/dic24_shared/amazon-reviews/full/reviews_devset.json
+2024-05-13 00:08:24,829:INFO:Preprocessing started.
+2024-05-13 00:08:44,661:INFO:Preprocessing finished.
+2024-05-13 00:09:01,500:INFO:Preprocessor pipeline model saved.
+2024-05-13 00:09:01,501:INFO:Preprocessed data saved.
+2024-05-13 00:09:25,733:INFO:Preprocessed data loaded with new SparkSession.
+2024-05-13 00:09:33,996:INFO:Training size: 47196
+2024-05-13 00:09:38,503:INFO:Validation size: 15741
+2024-05-13 00:09:42,369:INFO:Testing size: 15841
+2024-05-13 00:09:42,580:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 10, 'p': 1}.
+2024-05-13 00:11:13,256:INFO:Closing down clientserver connection
+2024-05-13 00:11:13,257:INFO:Training finished. Runtime: 0:01:30.677514
+2024-05-13 00:11:17,435:INFO:Train prediction runtime: 0:00:04.177396
+2024-05-13 00:11:21,380:INFO:Val prediction runtime: 0:00:03.945050
+2024-05-13 00:11:40,517:INFO:Train evaluation runtime: 0:00:19.137670, F1: 0.8727422906218616
+2024-05-13 00:11:52,282:INFO:Val evaluation runtime: 0:00:11.764374, F1: 0.6018395632466248
+2024-05-13 00:11:52,282:INFO:New best hyperparameter combinatioon found with validation F1: 0.6018395632466248 and configs: {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 10, 'p': 1}.
+2024-05-13 00:12:04,655:INFO:Model saved.
+2024-05-13 00:12:04,694:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 10, 'p': 2}.
+2024-05-13 00:13:17,587:INFO:Closing down clientserver connection
+2024-05-13 00:13:17,588:INFO:Training finished. Runtime: 0:01:12.893519
+2024-05-13 00:13:21,591:INFO:Train prediction runtime: 0:00:04.003469
+2024-05-13 00:13:25,478:INFO:Val prediction runtime: 0:00:03.886437
+2024-05-13 00:13:42,063:INFO:Train evaluation runtime: 0:00:16.585193, F1: 0.8727422906218616
+2024-05-13 00:13:52,758:INFO:Val evaluation runtime: 0:00:10.694728, F1: 0.6018395632466248
+2024-05-13 00:13:52,758:INFO:New best hyperparameter combinatioon found with validation F1: 0.6018395632466248 and configs: {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 10, 'p': 2}.
+2024-05-13 00:14:00,876:INFO:Model saved.
+2024-05-13 00:14:00,916:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 100, 'p': 1}.
+2024-05-13 00:23:12,715:INFO:Closing down clientserver connection
+2024-05-13 00:23:12,717:INFO:Training finished. Runtime: 0:09:11.800899
+2024-05-13 00:23:16,628:INFO:Train prediction runtime: 0:00:03.911349
+2024-05-13 00:23:20,577:INFO:Val prediction runtime: 0:00:03.948641
+2024-05-13 00:23:37,405:INFO:Train evaluation runtime: 0:00:16.827694, F1: 0.9381193412993383
+2024-05-13 00:23:48,589:INFO:Val evaluation runtime: 0:00:11.183967, F1: 0.6061716692183722
+2024-05-13 00:23:48,589:INFO:New best hyperparameter combinatioon found with validation F1: 0.6061716692183722 and configs: {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 100, 'p': 1}.
+2024-05-13 00:23:56,774:INFO:Model saved.
+2024-05-13 00:23:56,819:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 100, 'p': 2}.
+2024-05-13 00:33:19,249:INFO:Closing down clientserver connection
+2024-05-13 00:33:19,250:INFO:Training finished. Runtime: 0:09:22.431141
+2024-05-13 00:33:23,101:INFO:Train prediction runtime: 0:00:03.850991
+2024-05-13 00:33:26,834:INFO:Val prediction runtime: 0:00:03.733299
+2024-05-13 00:33:43,684:INFO:Train evaluation runtime: 0:00:16.849383, F1: 0.9381834913459517
+2024-05-13 00:33:55,489:INFO:Val evaluation runtime: 0:00:11.804868, F1: 0.6063353889813718
+2024-05-13 00:33:55,489:INFO:New best hyperparameter combinatioon found with validation F1: 0.6063353889813718 and configs: {'numTopFeatures': 10, 'regParam': 0.01, 'maxIter': 100, 'p': 2}.
+2024-05-13 00:34:03,701:INFO:Model saved.
+2024-05-13 00:34:03,740:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 10, 'p': 1}.
+2024-05-13 00:35:18,305:INFO:Closing down clientserver connection
+2024-05-13 00:35:18,306:INFO:Training finished. Runtime: 0:01:14.565605
+2024-05-13 00:35:22,179:INFO:Train prediction runtime: 0:00:03.873056
+2024-05-13 00:35:26,071:INFO:Val prediction runtime: 0:00:03.892620
+2024-05-13 00:35:43,007:INFO:Train evaluation runtime: 0:00:16.936010, F1: 0.8711118042568785
+2024-05-13 00:35:54,032:INFO:Val evaluation runtime: 0:00:11.024575, F1: 0.5934608328082426
+2024-05-13 00:35:54,032:INFO:New best hyperparameter combinatioon found with validation F1: 0.5934608328082426 and configs: {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 10, 'p': 1}.
+2024-05-13 00:36:02,378:INFO:Model saved.
+2024-05-13 00:36:02,414:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 10, 'p': 2}.
+2024-05-13 00:37:20,145:INFO:Closing down clientserver connection
+2024-05-13 00:37:20,147:INFO:Training finished. Runtime: 0:01:17.732642
+2024-05-13 00:37:24,334:INFO:Train prediction runtime: 0:00:04.187117
+2024-05-13 00:37:28,119:INFO:Val prediction runtime: 0:00:03.785111
+2024-05-13 00:37:44,768:INFO:Train evaluation runtime: 0:00:16.648800, F1: 0.8711118042568785
+2024-05-13 00:37:55,996:INFO:Val evaluation runtime: 0:00:11.228619, F1: 0.5934608328082426
+2024-05-13 00:37:55,997:INFO:New best hyperparameter combinatioon found with validation F1: 0.5934608328082426 and configs: {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 10, 'p': 2}.
+2024-05-13 00:38:05,675:INFO:Model saved.
+2024-05-13 00:38:05,711:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 100, 'p': 1}.
+2024-05-13 00:47:54,656:INFO:Closing down clientserver connection
+2024-05-13 00:47:54,657:INFO:Training finished. Runtime: 0:09:48.946285
+2024-05-13 00:47:58,453:INFO:Train prediction runtime: 0:00:03.795675
+2024-05-13 00:48:02,229:INFO:Val prediction runtime: 0:00:03.775407
+2024-05-13 00:48:19,195:INFO:Train evaluation runtime: 0:00:16.965956, F1: 0.9083074205531612
+2024-05-13 00:48:31,300:INFO:Val evaluation runtime: 0:00:12.104997, F1: 0.603100451038529
+2024-05-13 00:48:31,300:INFO:New best hyperparameter combinatioon found with validation F1: 0.603100451038529 and configs: {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 100, 'p': 1}.
+2024-05-13 00:48:39,086:INFO:Model saved.
+2024-05-13 00:48:39,120:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 100, 'p': 2}.
+2024-05-13 00:58:25,058:INFO:Closing down clientserver connection
+2024-05-13 00:58:25,059:INFO:Training finished. Runtime: 0:09:45.939255
+2024-05-13 00:58:28,820:INFO:Train prediction runtime: 0:00:03.761078
+2024-05-13 00:58:32,515:INFO:Val prediction runtime: 0:00:03.694844
+2024-05-13 00:58:49,460:INFO:Train evaluation runtime: 0:00:16.944274, F1: 0.9083074205531612
+2024-05-13 00:59:01,652:INFO:Val evaluation runtime: 0:00:12.192251, F1: 0.603100451038529
+2024-05-13 00:59:01,652:INFO:New best hyperparameter combinatioon found with validation F1: 0.603100451038529 and configs: {'numTopFeatures': 10, 'regParam': 0.1, 'maxIter': 100, 'p': 2}.
+2024-05-13 00:59:09,505:INFO:Model saved.
+2024-05-13 00:59:09,541:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 10, 'p': 1}.
+2024-05-13 01:00:23,484:INFO:Closing down clientserver connection
+2024-05-13 01:00:23,486:INFO:Training finished. Runtime: 0:01:13.944916
+2024-05-13 01:00:27,260:INFO:Train prediction runtime: 0:00:03.774797
+2024-05-13 01:00:31,055:INFO:Val prediction runtime: 0:00:03.794721
+2024-05-13 01:00:47,636:INFO:Train evaluation runtime: 0:00:16.581016, F1: 0.7822063948449486
+2024-05-13 01:00:58,562:INFO:Val evaluation runtime: 0:00:10.926073, F1: 0.5347587746612902
+2024-05-13 01:00:58,563:INFO:New best hyperparameter combinatioon found with validation F1: 0.5347587746612902 and configs: {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 10, 'p': 1}.
+2024-05-13 01:01:07,442:INFO:Model saved.
+2024-05-13 01:01:07,478:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 10, 'p': 2}.
+2024-05-13 01:02:24,382:INFO:Closing down clientserver connection
+2024-05-13 01:02:24,384:INFO:Training finished. Runtime: 0:01:16.905405
+2024-05-13 01:02:28,130:INFO:Train prediction runtime: 0:00:03.745821
+2024-05-13 01:02:31,916:INFO:Val prediction runtime: 0:00:03.786876
+2024-05-13 01:02:48,203:INFO:Train evaluation runtime: 0:00:16.286416, F1: 0.7822063948449486
+2024-05-13 01:02:59,004:INFO:Val evaluation runtime: 0:00:10.800833, F1: 0.5347587746612902
+2024-05-13 01:02:59,007:INFO:New best hyperparameter combinatioon found with validation F1: 0.5347587746612902 and configs: {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 10, 'p': 2}.
+2024-05-13 01:03:07,871:INFO:Model saved.
+2024-05-13 01:03:07,910:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 100, 'p': 1}.
+2024-05-13 01:12:50,320:INFO:Closing down clientserver connection
+2024-05-13 01:12:50,321:INFO:Training finished. Runtime: 0:09:42.411276
+2024-05-13 01:12:54,106:INFO:Train prediction runtime: 0:00:03.784629
+2024-05-13 01:12:57,808:INFO:Val prediction runtime: 0:00:03.702618
+2024-05-13 01:13:14,294:INFO:Train evaluation runtime: 0:00:16.486039, F1: 0.8507325685290341
+2024-05-13 01:13:24,412:INFO:Val evaluation runtime: 0:00:10.117119, F1: 0.5779154221258229
+2024-05-13 01:13:24,412:INFO:New best hyperparameter combinatioon found with validation F1: 0.5779154221258229 and configs: {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 100, 'p': 1}.
+2024-05-13 01:13:32,215:INFO:Model saved.
+2024-05-13 01:13:32,251:INFO:Training started with configs {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 100, 'p': 2}.
+2024-05-13 01:23:17,197:INFO:Closing down clientserver connection
+2024-05-13 01:23:17,198:INFO:Training finished. Runtime: 0:09:44.946989
+2024-05-13 01:23:20,976:INFO:Train prediction runtime: 0:00:03.778261
+2024-05-13 01:23:24,698:INFO:Val prediction runtime: 0:00:03.722155
+2024-05-13 01:23:42,040:INFO:Train evaluation runtime: 0:00:17.341509, F1: 0.8507325685290341
+2024-05-13 01:23:54,296:INFO:Val evaluation runtime: 0:00:12.255849, F1: 0.5779154221258229
+2024-05-13 01:23:54,296:INFO:New best hyperparameter combinatioon found with validation F1: 0.5779154221258229 and configs: {'numTopFeatures': 10, 'regParam': 1, 'maxIter': 100, 'p': 2}.
+2024-05-13 01:24:02,283:INFO:Model saved.
+2024-05-13 01:24:02,318:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 10, 'p': 1}.
+2024-05-13 01:25:19,514:INFO:Closing down clientserver connection
+2024-05-13 01:25:19,515:INFO:Training finished. Runtime: 0:01:17.196898
+2024-05-13 01:25:23,485:INFO:Train prediction runtime: 0:00:03.969740
+2024-05-13 01:25:27,229:INFO:Val prediction runtime: 0:00:03.743678
+2024-05-13 01:25:43,734:INFO:Train evaluation runtime: 0:00:16.504754, F1: 0.8727422906218616
+2024-05-13 01:25:55,137:INFO:Val evaluation runtime: 0:00:11.403611, F1: 0.6018395632466248
+2024-05-13 01:25:55,137:INFO:New best hyperparameter combinatioon found with validation F1: 0.6018395632466248 and configs: {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 10, 'p': 1}.
+2024-05-13 01:26:02,903:INFO:Model saved.
+2024-05-13 01:26:02,935:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 10, 'p': 2}.
+2024-05-13 01:27:16,703:INFO:Closing down clientserver connection
+2024-05-13 01:27:16,705:INFO:Training finished. Runtime: 0:01:13.769222
+2024-05-13 01:27:20,465:INFO:Train prediction runtime: 0:00:03.760754
+2024-05-13 01:27:24,279:INFO:Val prediction runtime: 0:00:03.813929
+2024-05-13 01:27:40,627:INFO:Train evaluation runtime: 0:00:16.347746, F1: 0.8727422906218616
+2024-05-13 01:27:52,125:INFO:Val evaluation runtime: 0:00:11.497891, F1: 0.6018395632466248
+2024-05-13 01:27:52,125:INFO:New best hyperparameter combinatioon found with validation F1: 0.6018395632466248 and configs: {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 10, 'p': 2}.
+2024-05-13 01:28:02,046:INFO:Model saved.
+2024-05-13 01:28:02,081:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 100, 'p': 1}.
+2024-05-13 01:37:45,441:INFO:Closing down clientserver connection
+2024-05-13 01:37:45,442:INFO:Training finished. Runtime: 0:09:43.361409
+2024-05-13 01:37:49,222:INFO:Train prediction runtime: 0:00:03.779705
+2024-05-13 01:37:53,001:INFO:Val prediction runtime: 0:00:03.778647
+2024-05-13 01:38:09,522:INFO:Train evaluation runtime: 0:00:16.521141, F1: 0.9381234921071601
+2024-05-13 01:38:21,196:INFO:Val evaluation runtime: 0:00:11.674015, F1: 0.6064889560494722
+2024-05-13 01:38:21,196:INFO:New best hyperparameter combinatioon found with validation F1: 0.6064889560494722 and configs: {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 100, 'p': 1}.
+2024-05-13 01:38:32,770:INFO:Model saved.
+2024-05-13 01:38:32,804:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 100, 'p': 2}.
+2024-05-13 01:48:14,563:INFO:Closing down clientserver connection
+2024-05-13 01:48:14,564:INFO:Training finished. Runtime: 0:09:41.760366
+2024-05-13 01:48:18,325:INFO:Train prediction runtime: 0:00:03.760987
+2024-05-13 01:48:22,103:INFO:Val prediction runtime: 0:00:03.777733
+2024-05-13 01:48:39,089:INFO:Train evaluation runtime: 0:00:16.985461, F1: 0.9381832813471934
+2024-05-13 01:48:50,170:INFO:Val evaluation runtime: 0:00:11.080943, F1: 0.6061814989935017
+2024-05-13 01:48:50,170:INFO:New best hyperparameter combinatioon found with validation F1: 0.6061814989935017 and configs: {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 100, 'p': 2}.
+2024-05-13 01:48:57,789:INFO:Model saved.
+2024-05-13 01:48:57,822:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 10, 'p': 1}.
+2024-05-13 01:50:11,037:INFO:Closing down clientserver connection
+2024-05-13 01:50:11,038:INFO:Training finished. Runtime: 0:01:13.215473
+2024-05-13 01:50:14,832:INFO:Train prediction runtime: 0:00:03.793931
+2024-05-13 01:50:18,572:INFO:Val prediction runtime: 0:00:03.740579
+2024-05-13 01:50:35,122:INFO:Train evaluation runtime: 0:00:16.550097, F1: 0.8711118042568785
+2024-05-13 01:50:46,032:INFO:Val evaluation runtime: 0:00:10.909310, F1: 0.5934608328082426
+2024-05-13 01:50:46,032:INFO:New best hyperparameter combinatioon found with validation F1: 0.5934608328082426 and configs: {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 10, 'p': 1}.
+2024-05-13 01:50:53,831:INFO:Model saved.
+2024-05-13 01:50:53,864:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 10, 'p': 2}.
+2024-05-13 01:52:07,584:INFO:Closing down clientserver connection
+2024-05-13 01:52:07,585:INFO:Training finished. Runtime: 0:01:13.721113
+2024-05-13 01:52:11,327:INFO:Train prediction runtime: 0:00:03.742194
+2024-05-13 01:52:15,039:INFO:Val prediction runtime: 0:00:03.711698
+2024-05-13 01:52:31,356:INFO:Train evaluation runtime: 0:00:16.317478, F1: 0.8711118042568785
+2024-05-13 01:52:41,343:INFO:Val evaluation runtime: 0:00:09.986638, F1: 0.5934608328082426
+2024-05-13 01:52:41,343:INFO:New best hyperparameter combinatioon found with validation F1: 0.5934608328082426 and configs: {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 10, 'p': 2}.
+2024-05-13 01:52:48,779:INFO:Model saved.
+2024-05-13 01:52:48,813:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 100, 'p': 1}.
+2024-05-13 02:02:34,756:INFO:Closing down clientserver connection
+2024-05-13 02:02:34,757:INFO:Training finished. Runtime: 0:09:45.943676
+2024-05-13 02:02:38,624:INFO:Train prediction runtime: 0:00:03.867446
+2024-05-13 02:02:42,497:INFO:Val prediction runtime: 0:00:03.873415
+2024-05-13 02:02:59,624:INFO:Train evaluation runtime: 0:00:17.126931, F1: 0.9083074205531612
+2024-05-13 02:03:13,031:INFO:Val evaluation runtime: 0:00:13.406195, F1: 0.603100451038529
+2024-05-13 02:03:13,031:INFO:New best hyperparameter combinatioon found with validation F1: 0.603100451038529 and configs: {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 100, 'p': 1}.
+2024-05-13 02:03:20,889:INFO:Model saved.
+2024-05-13 02:03:20,922:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 100, 'p': 2}.
+2024-05-13 02:13:09,525:INFO:Closing down clientserver connection
+2024-05-13 02:13:09,527:INFO:Training finished. Runtime: 0:09:48.604743
+2024-05-13 02:13:13,247:INFO:Train prediction runtime: 0:00:03.720529
+2024-05-13 02:13:16,931:INFO:Val prediction runtime: 0:00:03.683953
+2024-05-13 02:13:33,685:INFO:Train evaluation runtime: 0:00:16.753696, F1: 0.9083074205531612
+2024-05-13 02:13:44,457:INFO:Val evaluation runtime: 0:00:10.772084, F1: 0.603100451038529
+2024-05-13 02:13:44,457:INFO:New best hyperparameter combinatioon found with validation F1: 0.603100451038529 and configs: {'numTopFeatures': 2000, 'regParam': 0.1, 'maxIter': 100, 'p': 2}.
+2024-05-13 02:13:52,312:INFO:Model saved.
+2024-05-13 02:13:52,348:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 10, 'p': 1}.
+2024-05-13 02:15:08,707:INFO:Closing down clientserver connection
+2024-05-13 02:15:08,708:INFO:Training finished. Runtime: 0:01:16.360570
+2024-05-13 02:15:12,476:INFO:Train prediction runtime: 0:00:03.768321
+2024-05-13 02:15:16,206:INFO:Val prediction runtime: 0:00:03.729402
+2024-05-13 02:15:32,563:INFO:Train evaluation runtime: 0:00:16.356968, F1: 0.7822063948449486
+2024-05-13 02:15:44,676:INFO:Val evaluation runtime: 0:00:12.113174, F1: 0.5347587746612902
+2024-05-13 02:15:44,676:INFO:New best hyperparameter combinatioon found with validation F1: 0.5347587746612902 and configs: {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 10, 'p': 1}.
+2024-05-13 02:15:52,018:INFO:Model saved.
+2024-05-13 02:15:52,050:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 10, 'p': 2}.
+2024-05-13 02:17:04,819:INFO:Closing down clientserver connection
+2024-05-13 02:17:04,820:INFO:Training finished. Runtime: 0:01:12.770548
+2024-05-13 02:17:08,560:INFO:Train prediction runtime: 0:00:03.739743
+2024-05-13 02:17:12,385:INFO:Val prediction runtime: 0:00:03.824934
+2024-05-13 02:17:29,037:INFO:Train evaluation runtime: 0:00:16.651879, F1: 0.7822063948449486
+2024-05-13 02:17:39,975:INFO:Val evaluation runtime: 0:00:10.937796, F1: 0.5347587746612902
+2024-05-13 02:17:39,975:INFO:New best hyperparameter combinatioon found with validation F1: 0.5347587746612902 and configs: {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 10, 'p': 2}.
+2024-05-13 02:17:47,391:INFO:Model saved.
+2024-05-13 02:17:47,423:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 100, 'p': 1}.
+2024-05-13 08:24:24,249:INFO:Stopwords loaded from: Exercise_2/sparkly-svm/data/stopwords.txt
+2024-05-13 08:24:24,251:INFO:Data loaded from hdfs: hdfs:///user/dic24_shared/amazon-reviews/full/reviews_devset.json
+2024-05-13 08:24:24,314:INFO:Preprocessing started.
+2024-05-13 08:24:38,300:INFO:Preprocessing finished.
+2024-05-13 08:24:47,376:INFO:Preprocessor pipeline model saved.
+2024-05-13 08:24:47,376:INFO:Preprocessed data saved.
+2024-05-13 08:25:07,397:INFO:Preprocessed data loaded with new SparkSession.
+2024-05-13 08:25:15,869:INFO:Training size: 47196
+2024-05-13 08:25:20,171:INFO:Validation size: 15741
+2024-05-13 08:25:24,149:INFO:Testing size: 15841
+2024-05-13 08:25:24,394:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 100, 'p': 1}.
+2024-05-13 08:35:06,896:INFO:Closing down clientserver connection
+2024-05-13 08:35:06,898:INFO:Training finished. Runtime: 0:09:42.503705
+2024-05-13 08:35:11,131:INFO:Train prediction runtime: 0:00:04.233737
+2024-05-13 08:35:15,203:INFO:Val prediction runtime: 0:00:04.071566
+2024-05-13 08:35:34,320:INFO:Train evaluation runtime: 0:00:19.116731, F1: 0.8507097572064141
+2024-05-13 08:35:45,985:INFO:Val evaluation runtime: 0:00:11.664971, F1: 0.5778875273616735
+2024-05-13 08:35:46,036:INFO:Training started with configs {'numTopFeatures': 2000, 'regParam': 1, 'maxIter': 100, 'p': 2}.
+2024-05-13 08:45:13,156:INFO:Closing down clientserver connection
+2024-05-13 08:45:13,158:INFO:Training finished. Runtime: 0:09:27.121890
+2024-05-13 08:45:17,223:INFO:Train prediction runtime: 0:00:04.065115
+2024-05-13 08:45:21,142:INFO:Val prediction runtime: 0:00:03.919049
+2024-05-13 08:45:37,862:INFO:Train evaluation runtime: 0:00:16.720584, F1: 0.8507097572064141
+2024-05-13 08:45:49,805:INFO:Val evaluation runtime: 0:00:11.942301, F1: 0.5778875273616735
