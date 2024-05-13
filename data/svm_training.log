@@ -231,3 +231,12 @@
 2024-05-13 08:45:21,142:INFO:Val prediction runtime: 0:00:03.919049
 2024-05-13 08:45:37,862:INFO:Train evaluation runtime: 0:00:16.720584, F1: 0.8507097572064141
 2024-05-13 08:45:49,805:INFO:Val evaluation runtime: 0:00:11.942301, F1: 0.5778875273616735
+
+
+Training started with configs {'numTopFeatures': 2000, 'regParam': 0.01, 'maxIter': 100, 'p': 1}.
+Training finished. Runtime: 0:13:02.701815
+Train prediction runtime: 0:00:04.189033
+Val prediction runtime: 0:00:04.158183
+Train evaluation runtime: 0:00:22.797010, F1: 0.938166830380342
+Val evaluation runtime: 0:00:06.141520, F1: 0.6062594818699948
+Runtime prediciton: 0:00:04.170563, runtime evalutation 0:00:05.569976, F1 Test: 0.6062594818699948
