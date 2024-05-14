@@ -1,16 +1,26 @@
-# same as running:
-# $ docker run -p 8888:8888 -p 4040:4040 -p 4041:4041 -v $(pwd):/home/jovyan/work quay.io/jupyter/pyspark-notebook
-
-# run
+# ------------------------------------------- start
 docker-compose up
 
-# use jupyter notebook in browser or attach code editor
-open http://127.0.0.1:8888/
+docker ps --all
+docker exec -it example-project /bin/bash
+open http://localhost:8888/lab
 
-# stop and clean up
+# ------------------------------------------- stop
 docker-compose down
 
-ids=$(docker ps -a -q)
-for id in $ids; do docker stop $id; done
-for id in $ids; do docker rm $id; done
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+
+yes | docker container prune
+yes | docker image prune
+yes | docker volume prune
+yes | docker network prune
+yes | docker system prune
+
+# ------------------------------------------- verify cleanup
 docker ps --all
+docker images
+docker system df
+docker volume ls
+docker network ls
