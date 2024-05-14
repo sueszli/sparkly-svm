@@ -1,14 +1,16 @@
 ---
-title: "Data-intensive Computing 2024S (194.048)"
-subtitle: "Assignment 2 - Group XX"
-author: " ... Paul von Hirschhausen (01453360)"
-date: "2024-05-09"
+title: 'Data-intensive Computing 2024S (194.048)'
+subtitle: 'Assignment 2 - Group 39'
+author: 'Panadero P. Raquel (12231231), Paul v. Hirschhausen (01453360), Yahya Jabary (11912007)'
+date: '2024-05-09'
 output:
-  pdf_document:
-    toc: true       
-    toc_depth: 2    
-    number_sections: false
+    pdf_document:
+        toc: true
+        toc_depth: 2
+        number_sections: false
 ---
+
+_Github Repository:_ [https://github.com/sueszli/sparkly-svm](https://github.com/sueszli/sparkly-svm)
 
 # 1. Introduction
 
@@ -18,9 +20,9 @@ First, we replicated the steps from Assignment 1, focusing on calculating chi-sq
 
 Next, we transformed the review texts into a classic vector space representation using TF-IDF weighted features, building a transformation pipeline with Spark’s DataFrame API. This included tokenization, case folding, stopword removal, TF-IDF calculation, and chi-square selection of the top 2000 terms.
 
-Finally, we extended the pipeline to train a text classifier for predicting product categories from review texts. Using a Support Vector Machine (SVM) classifier, we implemented a strategy for multi-class classification by applying binary classifiers. We applied vector length normalization and conducted experiments to optimize the classifier's parameters, using a classical training, validation, and test set split approach. 
+Finally, we extended the pipeline to train a text classifier for predicting product categories from review texts. Using a Support Vector Machine (SVM) classifier, we implemented a strategy for multi-class classification by applying binary classifiers. We applied vector length normalization and conducted experiments to optimize the classifier's parameters, using a classical training, validation, and test set split approach.
 
-# 2. Problem Overview 
+# 2. Problem Overview
 
 Classifying products based on their review texts is a significant challenge in natural language processing and machine learning. This task is essential for e-commerce platforms, enhancing user experience by organizing products effectively, improving search accuracy, and personalizing recommendations. Given the vast amount of unstructured text data in customer reviews, developing efficient and accurate classification models is crucial.
 
@@ -30,31 +32,33 @@ The chi-square statistic helps address these challenges by selecting the most re
 
 Support Vector Machines (SVM) are well-suited for high-dimensional text classification. They handle large feature spaces effectively by finding the optimal hyperplane that maximizes class separation. SVMs are robust to overfitting due to their regularization capabilities and can model complex relationships through kernel functions. For multi-class problems, strategies like One-vs-One or One-vs-All extend SVMs' applicability, allowing them to classify products into multiple categories accurately.
 
-# 3. Methodology and Approach 
+# 3. Methodology and Approach
 
 In this chapter, we outline the methodology and approach used for text classification based on product reviews. We explore different stages of data processing and model training using PySpark, starting with the implementation of chi-square statistics for feature selection using RDDs and transitioning to Spark ML Pipelines for preprocessing and feature selection. Finally, we detail the incorporation of a Support Vector Machine (SVM) classifier to predict product categories.
 
 ## 3.1 RDDs
 
-As in assignment 1 we are calculating the chi-square statistoic for each word in each category. In the preprocessing stage, we performed tokenization, case folding, and stopword removal. We defined a regular expression for tokenization and loaded the stopwords into a broadcast variable. Each review text was tokenized into terms, converted to lowercase, and stripped of stopwords. 
+As in assignment 1 we are calculating the chi-square statistoic for each word in each category. In the preprocessing stage, we performed tokenization, case folding, and stopword removal. We defined a regular expression for tokenization and loaded the stopwords into a broadcast variable. Each review text was tokenized into terms, converted to lowercase, and stripped of stopwords.
 
 Then in the calculatiohn chi-square statistics for feature selection, we first computed various counts:
-* Category Count: The number of reviews per category.
-* Term Count: The number of occurrences of each term across all reviews.
-* Term-Category Count: The number of occurrences of each term within each category.
+
+-   Category Count: The number of reviews per category.
+-   Term Count: The number of occurrences of each term across all reviews.
+-   Term-Category Count: The number of occurrences of each term within each category.
 
 These counts were then broadcasted to be accessible across all nodes. We used these counts to compute the chi-square statistic for each term-category pair, determining how strongly each term was associated with each category. The chi-square statistic in this context is calculated using again the formula from assignment 1:
 
 $$
 \chi^2_{tc} = \frac{N(AD-BC)^2}{(A+B)(A+C)(B+D)(C+D)}
 $$
-where: 
 
-* A counts how many reviews in a particular category mention the term,
-* B counts mentions of the term in reviews outside that category,
-* C counts non-mentions of the term within the category,
-* D tallies non-mentions outside the category,
-* N is the total number of documents which can be omitted if we are just interested in the rankings.
+where:
+
+-   A counts how many reviews in a particular category mention the term,
+-   B counts mentions of the term in reviews outside that category,
+-   C counts non-mentions of the term within the category,
+-   D tallies non-mentions outside the category,
+-   N is the total number of documents which can be omitted if we are just interested in the rankings.
 
 We then selected the top 75 terms per category based on their chi-square values.
 
@@ -88,7 +92,6 @@ pipeline = Pipeline(stages=stages)
 
 After transforming the dataset with the fitted pipeline, we extracted the selected features. The `CountVectorizerModel` provided the vocabulary, while the `ChiSqSelector` provided the indices of the selected features. We used these indices to retrieve the corresponding terms from the vocabulary, representing the top features selected by the chi-square test.
 
-
 ## 3.3 Text Classification
 
 In this section, we expanded upon the pipeline from Part 2 by incorporating a support vector machine (SVM) classifier to predict product categories based on review text. The preprocessing pipeline remained consistent with the previous part, but we divided the process into two distinct pipelines: one for preprocessing and another for model training. This approach ensures that the preprocessing steps are only performed once, even when experimenting with different hyperparameter configurations, thereby improving efficiency. To facilitate this, we placed the `ChiSqSelector()` stage in the model training pipeline rather than in the preprocessing pipeline.
@@ -99,20 +102,20 @@ Prior to saving the preprocessed data, we split the dataset into training, valid
 
 We conducted a grid search over the following hyperparameter space:
 
-* numTopFeatures: [10, 2000]
-* regParam: [0.01, 0.1, 1]
-* maxIter: [10, 100]
-* p: [1, 2]
+-   numTopFeatures: [10, 2000]
+-   regParam: [0.01, 0.1, 1]
+-   maxIter: [10, 100]
+-   p: [1, 2]
 
 The performance of each configuration was evaluated on the validation set using the F1 metric. The best-performing model from this grid search was then applied to the test set for the final performance evaluation.
 
-The general approach of the pipeline can be seen in Figure 1. 
+The general approach of the pipeline can be seen in Figure 1.
 
 ```{r fig:Pipeline Ilustration, echo=FALSE, fig.cap="Text Classification Pipeline using PySpark", fig.align='center'}
 knitr::include_graphics("Pipeline Ilustration.png")
 ```
 
-# 4. Results 
+# 4. Results
 
 ## 4.1 RDDs
 
@@ -134,19 +137,19 @@ knitr::include_graphics("f1_val_hyper2.png")
 
 The best-performing model had the following hyperparameter configurations:
 
-* Number of top features used in the model: 2000
-* Regularization parameter 0.01
-* Maximal number of iterations: 100
-* p: 1
+-   Number of top features used in the model: 2000
+-   Regularization parameter 0.01
+-   Maximal number of iterations: 100
+-   p: 1
 
 This model achieved a validation set performance of 0.606489 (F1 Score) and a test set performance of 0.606259.
 
 Additionally, the mean runtime depending on the maximum number of iterations was as follows:
 
-| maxIter | Runtime in s|
-|---------|-------------|
-| 10      | 75.500000   |
-| 100     | 578.166667  |
+| maxIter | Runtime in s |
+| ------- | ------------ |
+| 10      | 75.500000    |
+| 100     | 578.166667   |
 
 It is important to note that although the identified hyperparameters yielded the best performance on the validation set, in a real-world application, we might also consider a model with the same hyperparameter configuration but using a lower number of features. The performance difference is minimal, yet reducing the number of features can enhance the model's interpretability and usability, making it easier to understand and implement.
 
@@ -156,31 +159,29 @@ All the performance metrics can be found in the appendix.
 
 # Appendix
 
-
-|   numTopFeatures |   regParam |   maxIter |   p |   f1_train |   f1_val |   runtime_training |   runtime_train_pred |   runtime_train_val |   runtime_train_eval |
-|-----------------:|-----------:|----------:|----:|-----------:|---------:|-------------------:|---------------------:|--------------------:|---------------------:|
-|               10 |       0.01 |        10 |   1 |   0.872742 | 0.60184  |                 90 |                    4 |                   3 |                   11 |
-|               10 |       0.01 |        10 |   2 |   0.872742 | 0.60184  |                 72 |                    4 |                   3 |                   10 |
-|               10 |       0.01 |       100 |   1 |   0.938119 | 0.606172 |                551 |                    3 |                   3 |                   11 |
-|               10 |       0.01 |       100 |   2 |   0.938183 | 0.606335 |                562 |                    3 |                   3 |                   11 |
-|               10 |       0.1  |        10 |   1 |   0.871112 | 0.593461 |                 74 |                    3 |                   3 |                   11 |
-|               10 |       0.1  |        10 |   2 |   0.871112 | 0.593461 |                 77 |                    4 |                   3 |                   11 |
-|               10 |       0.1  |       100 |   1 |   0.908307 | 0.6031   |                588 |                    3 |                   3 |                   12 |
-|               10 |       0.1  |       100 |   2 |   0.908307 | 0.6031   |                585 |                    3 |                   3 |                   12 |
-|               10 |       1    |        10 |   1 |   0.782206 | 0.534759 |                 73 |                    3 |                   3 |                   10 |
-|               10 |       1    |        10 |   2 |   0.782206 | 0.534759 |                 76 |                    3 |                   3 |                   10 |
-|               10 |       1    |       100 |   1 |   0.850733 | 0.577915 |                582 |                    3 |                   3 |                   10 |
-|               10 |       1    |       100 |   2 |   0.850733 | 0.577915 |                584 |                    3 |                   3 |                   12 |
-|             2000 |       0.01 |        10 |   1 |   0.872742 | 0.60184  |                 77 |                    3 |                   3 |                   11 |
-|             2000 |       0.01 |        10 |   2 |   0.872742 | 0.60184  |                 73 |                    3 |                   3 |                   11 |
-|             2000 |       0.01 |       100 |   1 |   0.938123 | 0.606489 |                583 |                    3 |                   3 |                   11 |
-|             2000 |       0.01 |       100 |   2 |   0.938183 | 0.606181 |                581 |                    3 |                   3 |                   11 |
-|             2000 |       0.1  |        10 |   1 |   0.871112 | 0.593461 |                 73 |                    3 |                   3 |                   10 |
-|             2000 |       0.1  |        10 |   2 |   0.871112 | 0.593461 |                 73 |                    3 |                   3 |                    9 |
-|             2000 |       0.1  |       100 |   1 |   0.908307 | 0.6031   |                585 |                    3 |                   3 |                   13 |
-|             2000 |       0.1  |       100 |   2 |   0.908307 | 0.6031   |                588 |                    3 |                   3 |                   10 |
-|             2000 |       1    |        10 |   1 |   0.782206 | 0.534759 |                 76 |                    3 |                   3 |                   12 |
-|             2000 |       1    |        10 |   2 |   0.782206 | 0.534759 |                 72 |                    3 |                   3 |                   10 |
-|             2000 |       1    |       100 |   1 |   0.85071  | 0.577888 |                582 |                    4 |                   4 |                   11 |
-|             2000 |       1    |       100 |   2 |   0.85071  | 0.577888 |                567 |                    4 |                   3 |                   11
-
+| numTopFeatures | regParam | maxIter |   p | f1_train |   f1_val | runtime_training | runtime_train_pred | runtime_train_val | runtime_train_eval |
+| -------------: | -------: | ------: | --: | -------: | -------: | ---------------: | -----------------: | ----------------: | -----------------: |
+|             10 |     0.01 |      10 |   1 | 0.872742 |  0.60184 |               90 |                  4 |                 3 |                 11 |
+|             10 |     0.01 |      10 |   2 | 0.872742 |  0.60184 |               72 |                  4 |                 3 |                 10 |
+|             10 |     0.01 |     100 |   1 | 0.938119 | 0.606172 |              551 |                  3 |                 3 |                 11 |
+|             10 |     0.01 |     100 |   2 | 0.938183 | 0.606335 |              562 |                  3 |                 3 |                 11 |
+|             10 |      0.1 |      10 |   1 | 0.871112 | 0.593461 |               74 |                  3 |                 3 |                 11 |
+|             10 |      0.1 |      10 |   2 | 0.871112 | 0.593461 |               77 |                  4 |                 3 |                 11 |
+|             10 |      0.1 |     100 |   1 | 0.908307 |   0.6031 |              588 |                  3 |                 3 |                 12 |
+|             10 |      0.1 |     100 |   2 | 0.908307 |   0.6031 |              585 |                  3 |                 3 |                 12 |
+|             10 |        1 |      10 |   1 | 0.782206 | 0.534759 |               73 |                  3 |                 3 |                 10 |
+|             10 |        1 |      10 |   2 | 0.782206 | 0.534759 |               76 |                  3 |                 3 |                 10 |
+|             10 |        1 |     100 |   1 | 0.850733 | 0.577915 |              582 |                  3 |                 3 |                 10 |
+|             10 |        1 |     100 |   2 | 0.850733 | 0.577915 |              584 |                  3 |                 3 |                 12 |
+|           2000 |     0.01 |      10 |   1 | 0.872742 |  0.60184 |               77 |                  3 |                 3 |                 11 |
+|           2000 |     0.01 |      10 |   2 | 0.872742 |  0.60184 |               73 |                  3 |                 3 |                 11 |
+|           2000 |     0.01 |     100 |   1 | 0.938123 | 0.606489 |              583 |                  3 |                 3 |                 11 |
+|           2000 |     0.01 |     100 |   2 | 0.938183 | 0.606181 |              581 |                  3 |                 3 |                 11 |
+|           2000 |      0.1 |      10 |   1 | 0.871112 | 0.593461 |               73 |                  3 |                 3 |                 10 |
+|           2000 |      0.1 |      10 |   2 | 0.871112 | 0.593461 |               73 |                  3 |                 3 |                  9 |
+|           2000 |      0.1 |     100 |   1 | 0.908307 |   0.6031 |              585 |                  3 |                 3 |                 13 |
+|           2000 |      0.1 |     100 |   2 | 0.908307 |   0.6031 |              588 |                  3 |                 3 |                 10 |
+|           2000 |        1 |      10 |   1 | 0.782206 | 0.534759 |               76 |                  3 |                 3 |                 12 |
+|           2000 |        1 |      10 |   2 | 0.782206 | 0.534759 |               72 |                  3 |                 3 |                 10 |
+|           2000 |        1 |     100 |   1 |  0.85071 | 0.577888 |              582 |                  4 |                 4 |                 11 |
+|           2000 |        1 |     100 |   2 |  0.85071 | 0.577888 |              567 |                  4 |                 3 |                 11 |

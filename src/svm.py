@@ -14,21 +14,6 @@ from sklearn.model_selection import train_test_split
 import pathlib
 
 
-"""
-Train a Support Vector Machine text classifier model that can predict the product category from a review's text.
-
-We're dealing with multi-class problems, so make sure to put a strategy in place that allows binary classifiers to be applicable.
-
-Split the review data into training, validation, and test set.
-
-Use a grid search for parameter optimization:
-
-- Compare chi square overall top 2000 filtered features with another, heavier filtering with much less dimensionality (see Spark ML documentation for options).
-- Compare different SVM settings by varying the regularization parameter (choose 3 different values), standardization of training features (2 values), and maximum number of iterations (2 values).
-
-Use the MulticlassClassificationEvaluator to estimate performance of your trained classifiers on the test set, using F1 measure as criterion.
-"""
-
 DATA_PATH = pathlib.Path(__file__).parent.parent / "data" / "reviews_devset.json"
 STOPWORD_PATH = pathlib.Path(__file__).parent.parent / "data" / "stopwords.txt"
 
