@@ -1,10 +1,10 @@
-![](./report/Pipeline%20Ilustration.png)
+![](./docs/Pipeline%20Ilustration.png)
 
 <br><br>
 
-![](./report/f1_val_hyper.png)
+![](./docs/f1_val_hyper.png)
 
-![](./report/f1_val_hyper2.png)
+![](./docs/f1_val_hyper2.png)
 
 | numTopFeatures | regParam | maxIter |   p | f1_train |   f1_val | runtime_training | runtime_train_pred | runtime_train_val | runtime_train_eval |
 | -------------: | -------: | ------: | --: | -------: | -------: | ---------------: | -----------------: | ----------------: | -----------------: |
