@@ -18,7 +18,7 @@ part 2: ✅
 -   pick top 2000 words with the highest chi-squared values
 -   output to `output_ds.txt`, compare with the output of the previous assignment
 
-part 3: ✅ (still needs the right model configs)
+part 3: ✅
 
 see relevant slides: https://tuwel.tuwien.ac.at/pluginfile.php/3987338/mod_resource/content/1/Lecture5_%20Spark_SparkML.pdf
 
