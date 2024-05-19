@@ -10,12 +10,6 @@
 
 # install
 
-```
-   ∧,,,∧
- (  ̳• · • ̳)   ⋆｡°✩ ⋆⁺｡˚⋆˙‧₊✩₊‧˙⋆˚｡⁺⋆ ✩°｡⋆ ・゜゜・． ｡･ﾟﾟ･　
-/    づ✩₊˚.⋆☾⋆ °✩ sparkly support vector machine .・゜゜・　　
-```
-
 _docker_
 
 -   run `docker-compose up` - see `./run.sh` for more details.
